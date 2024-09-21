@@ -80,7 +80,7 @@ class Soldier:
             
     #     self.update_status()
     
-    def draw(self,screen):
+    def draw(self,screen, sound):
         screen.blit(self.image,self.rect)
         #Update status cập nhật frame
         current_status_time = pygame.time.get_ticks()
@@ -107,7 +107,8 @@ class Soldier:
                 self.time_move_start = current_move
         elif self.status == Status_Soldier.ATTACK:
             current_attack = pygame.time.get_ticks()
-            if current_attack - self.time_bullet_start > 2500:
+            if current_attack - self.time_bullet_start >= 1500:
+                sound.play(1)
                 self.attack()
                 self.time_bullet_start = current_attack
             

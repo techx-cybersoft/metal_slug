@@ -24,7 +24,7 @@ x_hero_start = hero.rect.x
 first_soldier = Soldier()
 
 lst_soldier:list[Soldier] = []
-# lst_soldier.append(first_soldier)
+lst_soldier.append(first_soldier)
 
 #Setup thời gian tạo lính
 time_create_soldier = 0
@@ -48,6 +48,19 @@ game_over_rect = game_over_title.get_rect()
 game_over_rect.x = SCREEN_WIDTH // 2 - game_over_title.get_width() // 2
 game_over_rect.y = SCREEN_HEIGHT // 2 - game_over_title.get_height() //2
 
+# Xử lý âm thanh trong game
+game_sound = pygame.mixer.Sound("./sounds/music.mp3")
+hero_attack = pygame.mixer.Sound("./sounds/explosion.wav")
+soldier_attack = pygame.mixer.Sound("./sounds/cannon.wav")
+hero_die = pygame.mixer.Sound("./sounds/marco.wav")
+soldier_die1 = pygame.mixer.Sound("./sounds/soldier1.wav")
+soldier_die2 = pygame.mixer.Sound("./sounds/soldier2.wav")
+soldier_die3 = pygame.mixer.Sound("./sounds/soldier3.wav")
+soldier_die4 = pygame.mixer.Sound("./sounds/soldier4.wav")
+soldier_die5 = pygame.mixer.Sound("./sounds/soldier5.wav")
+soldier_sounds = [soldier_die1, soldier_die2, soldier_die3, soldier_die4, soldier_die5]
+game_sound.play(-1)
+
 running = True
 
 while running:
@@ -64,6 +77,7 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN: #Sự kiện nhấp phím
             if event.key == pygame.K_j:
+                hero_attack.play(1)
                 hero.attack()
         
         # elif event.type == pygame.KEYDOWN:
@@ -104,6 +118,9 @@ while running:
     for bullet in hero.lst_bullet:
         for soldier_item in lst_soldier:
             if bullet.rect.colliderect(soldier_item.rect) and soldier_item.status != Status_Soldier.DIE:
+                rand = random.randint(0, 4)
+                sound = soldier_sounds[rand]
+                sound.play(1)
                 soldier_item.status = Status_Soldier.DIE
                 hero.lst_bullet.remove(bullet)
                 # lst_soldier.remove(soldier_item)
@@ -112,7 +129,7 @@ while running:
     
     for soldier_item in lst_soldier:
         #Vẽ soldier
-        soldier_item.draw(screen)
+        soldier_item.draw(screen, soldier_attack)
         for bullet in soldier_item.lst_bullet:
             if bullet.rect.colliderect(hero.rect):
                 soldier_item.lst_bullet.remove(bullet)
@@ -132,6 +149,7 @@ while running:
     screen.blit(live_title, (live_rect.x, live_rect.y))
     
     if live <= 0:
+        hero_die.play(1)
         # screen.fill((0, 0, 0))  # Clear the screen
         hero.status = Status_Hero.DIE
 
